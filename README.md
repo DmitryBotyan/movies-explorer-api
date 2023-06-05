@@ -1,4 +1,4 @@
-# movies-explorer-api
+# movies-explorer
 
 ## Ссылки на проект
 
