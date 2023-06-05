@@ -1,9 +1,7 @@
-# react-mesto-api-full
+# movies-explorer-api
 
 ## Ссылки на проект
 
-IP-адрес 158.160.43.27
+IP-адрес 51.250.69.88
 
-Frontend https://mestoo.students.nomoredomains.monster
-
-Backend https://api.mestoo.students.nomoredomains.monster
+Frontend https://api.movies-explorer-s.nomoredomains.rocks
