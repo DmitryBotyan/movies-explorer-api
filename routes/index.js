@@ -18,7 +18,7 @@ router.get('/crash-test', () => {
   }, 0);
 });
 router.use(auth);
-router.use('/films', moviesRouter);
+router.use('/movies', moviesRouter);
 router.use('/users', usersRouter);
 router.use('*', (res, req, next) => {
   next(new DocumentNotFoundError('Страница не найдена'));

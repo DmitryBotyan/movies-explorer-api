@@ -25,6 +25,7 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
+    owner: req.user._id,
     nameRU,
     nameEN,
   }).then((movie) => {
@@ -43,6 +44,7 @@ module.exports.createMovie = (req, res, next) => {
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
+    .populate('owner')
     .then((movies) => {
       res.send(movies);
     })
@@ -54,19 +56,28 @@ module.exports.getMovies = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { id } = req.params;
   Movie.findById(id)
-    .then((card) => {
-      Movie.deleteOne(card)
-        .orFail(() => {
-          next(new DocumentNotFoundError('Объект не найден'));
-        })
-        .then((m) => {
-          res.send(m);
-        }).catch((err) => {
-          if (err instanceof CastError) {
-            next(new CastError('Невалидный идентификатор'));
-          } else {
-            next(err);
-          }
+    .then((movie) => {
+      if (movie.owner.toJSON() === req.user._id) {
+        Movie.deleteOne(movie)
+          .orFail(() => {
+            next(new DocumentNotFoundError('Объект не найден'));
+          })
+          .then((m) => {
+            res.send(m);
+          }).catch((err) => {
+            if (err instanceof CastError) {
+              next(new CastError('Невалидный идентификатор'));
+            } else {
+              next(err);
+            }
+          });
+      } else {
+        res.send({
+          message: 'Нельзя удалить чужой фильм',
         });
+      }
+    })
+    .catch((err) => {
+      next(err);
     });
 };
