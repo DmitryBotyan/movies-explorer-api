@@ -2,6 +2,6 @@
 
 ## Ссылки на проект
 
-IP-адрес 51.250.69.88
+IP-адрес 158.160.108.205
 
 Frontend https://api.movies-explorer-s.nomoredomains.rocks
