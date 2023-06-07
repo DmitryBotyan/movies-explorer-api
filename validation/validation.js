@@ -4,9 +4,9 @@ const urlRegex = /[-a-zA-A0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-A0-9@:
 
 const createUserValidation = celebrate({
   body: Joi.object({
-    name: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(2).max(30),
+    password: Joi.string().required(),
   }),
 });
 
@@ -26,7 +26,7 @@ const updateUserValidation = celebrate({
 
 const idValidation = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().length(24),
+    id: Joi.string().hex().length(24),
   }),
 });
 
@@ -42,6 +42,7 @@ const createMovieValidation = celebrate({
     thumbnail: Joi.string().required().regex(urlRegex),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
+    moveId: Joi.number().required(),
   }),
 });
 

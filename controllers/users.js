@@ -5,6 +5,8 @@ const {
   ValidationError, DocumentNotFoundError, CreateUserError,
 } = require('../middlewares/error');
 
+require('../node_modules/dotenv').config();
+
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.createUser = (req, res, next) => {
@@ -21,7 +23,10 @@ module.exports.createUser = (req, res, next) => {
         avatar: user.avatar,
         email: user.email,
       });
-    });
+    })
+      .catch((err) => {
+        next(err);
+      });
   })
     .catch((err) => {
       if (err instanceof ValidationError) {
@@ -72,6 +77,8 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof ValidationError) {
         next(new ValidationError('Переданы некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new CreateUserError('Такой пользователь уже существует'));
       } else {
         next(err);
       }

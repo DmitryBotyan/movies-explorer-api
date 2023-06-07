@@ -58,7 +58,7 @@ const movieSchema = new mongoose.Schema({
     require: [true, 'Поле owner обязательно'],
   },
   movieId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Number,
     require: [true, 'Поле movieId обязательно'],
   },
   nameRU: {
