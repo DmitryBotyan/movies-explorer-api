@@ -42,7 +42,7 @@ const createMovieValidation = celebrate({
     thumbnail: Joi.string().required().regex(urlRegex),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
-    moveId: Joi.number().required(),
+    movieId: Joi.number().required(),
   }),
 });
 
