@@ -7,7 +7,7 @@ const bodyparser = require('./node_modules/body-parser');
 const { cors } = require('./middlewares/cors');
 const { errors } = require('./node_modules/celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const limiter = require('./middlewares/limiter');
+const { limiter } = require('./middlewares/limiter');
 
 const app = express();
 
