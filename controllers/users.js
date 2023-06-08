@@ -1,11 +1,13 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const bcrypt = require('../node_modules/bcryptjs');
-const jwt = require('../node_modules/jsonwebtoken');
-const {
-  ValidationError, DocumentNotFoundError, CreateUserError,
-} = require('../middlewares/error');
+const { CreateError } = require('../utils/errors/CreateError');
+const { ValidationError } = require('../utils/errors/ValidationError');
+const { DocumentNotFoundError } = require('../utils/errors/DocumentNotFoundError');
 
-require('../node_modules/dotenv').config();
+const { VALIDATION_ERROR, REGISTER_ERROR, NOT_FOUND } = require('../utils/constants');
+
+require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -25,14 +27,16 @@ module.exports.createUser = (req, res, next) => {
       });
     })
       .catch((err) => {
-        next(err);
+        if (err.code === 11000) {
+          next(new CreateError(REGISTER_ERROR));
+        } else {
+          next(err);
+        }
       });
   })
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new ValidationError('Переданы некорректные данные'));
-      } else if (err.code === 11000) {
-        next(new CreateUserError('Такой пользователь уже существует'));
+        next(new ValidationError(VALIDATION_ERROR));
       } else {
         next(err);
       }
@@ -57,7 +61,7 @@ module.exports.login = (req, res, next) => {
 module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail(() => {
-      next(new DocumentNotFoundError('Объект не найден'));
+      next(new DocumentNotFoundError(NOT_FOUND));
     })
     .then((user) => {
       res.send(user);
@@ -69,16 +73,14 @@ module.exports.getCurrentUser = (req, res, next) => {
 module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
     .orFail(() => {
-      next(new DocumentNotFoundError('Объект не найден'));
+      next(new DocumentNotFoundError(NOT_FOUND));
     })
     .then((updatedUser) => {
       res.send(updatedUser);
     })
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new ValidationError('Переданы некорректные данные'));
-      } else if (err.code === 11000) {
-        next(new CreateUserError('Такой пользователь уже существует'));
+        next(new ValidationError(VALIDATION_ERROR));
       } else {
         next(err);
       }

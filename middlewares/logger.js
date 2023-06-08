@@ -1,5 +1,5 @@
-const winston = require('../node_modules/winston');
-const expressWinston = require('../node_modules/express-winston');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
 const requestLogger = expressWinston.logger({
   transports: [

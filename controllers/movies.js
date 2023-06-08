@@ -1,7 +1,11 @@
 const Movie = require('../models/movie');
+const { ValidationError } = require('../utils/errors/ValidationError');
+const { DocumentNotFoundError } = require('../utils/errors/DocumentNotFoundError');
+const { CastError } = require('../utils/errors/CastError');
+
 const {
-  ValidationError, DocumentNotFoundError, CreateUserError, CastError,
-} = require('../middlewares/error');
+  VALIDATION_ERROR, NOT_FOUND, CAST_ERROR, FILM_DELETE, FILM_DELETE_ERROR,
+} = require('../utils/constants');
 
 module.exports.createMovie = (req, res, next) => {
   const {
@@ -35,9 +39,7 @@ module.exports.createMovie = (req, res, next) => {
   })
     .catch((err) => {
       if (err instanceof ValidationError) {
-        next(new ValidationError('Переданы некорректные данные'));
-      } else if (err.code === 11000) {
-        next(new CreateUserError('Такой фильм уже добавлен'));
+        next(new ValidationError(VALIDATION_ERROR));
       } else {
         next(err);
       }
@@ -45,7 +47,7 @@ module.exports.createMovie = (req, res, next) => {
 };
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
+  Movie.find({ owner: req.user._id })
     .populate('owner')
     .then((movies) => {
       res.send(movies);
@@ -62,21 +64,19 @@ module.exports.deleteMovie = (req, res, next) => {
       if (movie.owner.toJSON() === req.user._id) {
         Movie.deleteOne(movie)
           .orFail(() => {
-            next(new DocumentNotFoundError('Объект не найден'));
+            next(new DocumentNotFoundError(NOT_FOUND));
           })
-          .then((m) => {
-            res.send(m);
+          .then(() => {
+            res.send(FILM_DELETE);
           }).catch((err) => {
             if (err instanceof CastError) {
-              next(new CastError('Невалидный идентификатор'));
+              next(new CastError(CAST_ERROR));
             } else {
               next(err);
             }
           });
       } else {
-        res.send({
-          message: 'Нельзя удалить чужой фильм',
-        });
+        res.status(403).send(FILM_DELETE_ERROR);
       }
     })
     .catch((err) => {

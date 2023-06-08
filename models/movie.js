@@ -1,5 +1,5 @@
-const mongoose = require('../node_modules/mongoose');
-const validator = require('../node_modules/validator');
+const mongoose = require('mongoose');
+const validator = require('validator');
 
 const movieSchema = new mongoose.Schema({
   country: {

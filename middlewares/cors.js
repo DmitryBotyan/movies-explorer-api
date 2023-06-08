@@ -1,11 +1,5 @@
-const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
-  'http://localhost:3001',
-  'http://localhost:3000',
-];
+const { allowedCors } = require('../utils/constants');
 
-// eslint-disable-next-line consistent-return
 const cors = (req, res, next) => {
   const { origin } = req.headers;
   const { method } = req;

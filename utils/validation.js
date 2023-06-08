@@ -1,4 +1,4 @@
-const { Joi, celebrate } = require('../node_modules/celebrate');
+const { Joi, celebrate } = require('celebrate');
 
 const urlRegex = /[-a-zA-A0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-A0-9@:%_+.~#?&//=]*)?/i;
 

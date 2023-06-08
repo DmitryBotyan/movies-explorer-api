@@ -11,5 +11,8 @@ module.exports = {
   },
   rules: {
     'no-underscore-dangle': ['error', { allow: ['_id'] }],
+    'eslint-disable': 'off',
+    'eslint-disable-line': 'off',
+    'eslint-disable-next-line': 'off',
   },
 };
